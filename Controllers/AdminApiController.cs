@@ -22,8 +22,10 @@ namespace FlightPlannerVS.Controllers
         }
 
         [Route("admin-api/flights")]
+        [HttpPut]
         public IHttpActionResult PutFlight(AddFlightRequest newFlight)
         {
+
             var output = new Flight
             {
                 ArrivalTime = newFlight.ArrivalTime,
@@ -33,16 +35,26 @@ namespace FlightPlannerVS.Controllers
                 Carrier = newFlight.Carrier
             };
 
-            if (FlightStorage.AllFlights.Contains(output))
-            {
-                //throw new Exception("This flight is already registered.");
-                return BadRequest("This flight is already registered.");
-            }
+            //if (FlightStorage.AllFlights.Count > 0 && FlightStorage.AllFlights.Any(x =>
+            //    x.To == newFlight.To &&
+            //    x.From == newFlight.From &&
+            //    x.Carrier == newFlight.Carrier &&
+            //    x.DepartureTime == newFlight.DepartureTime &&
+            //    x.ArrivalTime == newFlight.ArrivalTime))
+            //{
+            //    return Conflict();
+            //}
 
             FlightStorage.AddFlight(output);
 
             return Created("", output);
         }
 
+        [Route("admin-api/flights")]
+        [HttpDelete]
+        public IHttpActionResult DeleteFlight(Flight flight)
+        {
+            return Ok();
+        }
     }
 }

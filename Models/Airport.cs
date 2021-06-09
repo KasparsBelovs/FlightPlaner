@@ -13,6 +13,13 @@ namespace FlightPlannerVS.Models
 
         [JsonProperty("airport")]
         public string AirportName { get; set; }
+
+        public Airport(string country, string city, string airportName)
+        {
+            Country = country;
+            City = city;
+            AirportName = airportName;
+        }
        
     }
 }
