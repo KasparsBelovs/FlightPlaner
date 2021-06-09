@@ -13,6 +13,7 @@ namespace FlightPlannerVS.Controllers
         [HttpPost]
         public IHttpActionResult Clear()
         {
+
             return Ok();
         }
     }
