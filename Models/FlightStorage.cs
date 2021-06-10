@@ -13,16 +13,6 @@ namespace FlightPlannerVS.Models
 
         public static Flight AddFlight(Flight newFlight)
         {
-        //    if (AllFlights.Any(x => 
-        //        x.To == newFlight.To &&
-        //        x.From == newFlight.From &&
-        //        x.Carrier == newFlight.Carrier &&
-        //        x.DepartureTime == newFlight.DepartureTime &&
-        //        x.ArrivalTime == newFlight.ArrivalTime))
-        //    {
-        //        throw new Exception("fdsfhsafks");
-        //    }
-            
             newFlight.Id = _id;
             _id++;
             AllFlights.Add(newFlight);
@@ -33,6 +23,11 @@ namespace FlightPlannerVS.Models
         public static Flight FindFlight(int id)
         {
             return AllFlights.FirstOrDefault(x => x.Id == id);
+        }
+
+        public static void DeleteFlight(int id)
+        {
+            AllFlights.Remove(FindFlight(id));
         }
     }
 }
