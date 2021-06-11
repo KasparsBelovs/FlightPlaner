@@ -48,9 +48,7 @@ namespace FlightPlannerVS.Controllers
                 return BadRequest("Check Departure and Arrival Time");
             }
             
-            if (newFlight.To.AirportName.ToLower().Trim() == newFlight.From.AirportName.ToLower().Trim() &&
-                newFlight.To.Country.ToLower().Trim() == newFlight.From.Country.ToLower().Trim() &&
-                newFlight.To.City.ToLower().Trim() == newFlight.From.City.ToLower().Trim())
+            if (newFlight.To.AirportName.ToLower().Trim() == newFlight.From.AirportName.ToLower().Trim())
             {
                 return BadRequest("City From and To are the same");
             }
