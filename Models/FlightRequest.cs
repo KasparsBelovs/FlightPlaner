@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using FlightPlannerVS.Controllers;
 
 namespace FlightPlannerVS.Models
 {
-    public class AddFlightRequest
+    public class FlightRequest
     {
         public Airport From { get; set; }
         public Airport To { get; set; }

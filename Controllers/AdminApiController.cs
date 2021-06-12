@@ -24,7 +24,7 @@ namespace FlightPlannerVS.Controllers
 
         [Route("admin-api/flights")]
         [HttpPut]
-        public IHttpActionResult PutFlight(AddFlightRequest newFlight)
+        public IHttpActionResult PutFlight(FlightRequest newFlight)
         {
             if (newFlight.To == null ||
                 string.IsNullOrEmpty(newFlight.To?.AirportName) ||

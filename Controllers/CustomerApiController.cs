@@ -42,21 +42,32 @@ namespace FlightPlannerVS.Controllers
         }
 
         [Route("api/flights/search")]
-        [HttpGet]
-        public IHttpActionResult SearchFlights(string from, string to, string date)
+        [HttpPost]
+        public IHttpActionResult SearchFlights(SearchFlightRequest request)
         {
-            Flight result = null;
-            foreach (var x in FlightStorage.AllFlights)
+            if (request == null ||
+                request.To == request.From ||
+                string.IsNullOrEmpty(request.To) ||
+                string.IsNullOrEmpty(request.From) ||
+                string.IsNullOrEmpty(request.DepartureDate)
+            )
             {
-                if (x.From.AirportName == from &&
-                    x.To.AirportName == to &&
-                    x.DepartureTime == date)
+                return BadRequest();
+            }
+
+            var page = new PageResult();
+
+            foreach (var flight in FlightStorage.AllFlights)
+            {
+                if (flight.From.AirportName == request.From &&
+                    flight.To.AirportName == request.To &&
+                    flight.DepartureTime == request.DepartureDate)
                 {
-                    return Ok(x);
+                    page.items.Add(flight);
                 }
             }
 
-            return null;
+            return Ok(page);
         }
 
         [Route("api/flights/{id}")]
@@ -65,7 +76,7 @@ namespace FlightPlannerVS.Controllers
         {
             var flight = FlightStorage.FindFlight(id);
 
-            return flight == null ? (IHttpActionResult)NotFound() : Ok();
+            return flight == null ? (IHttpActionResult)NotFound() : Ok(flight);
         }
     }
 }

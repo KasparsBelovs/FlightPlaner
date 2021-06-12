@@ -158,17 +158,16 @@
     <Compile Include="Attributes\BasicAuthenticationAttribute.cs" />
     <Compile Include="Controllers\AdminApiController.cs" />
     <Compile Include="Controllers\CustomerApiController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TestingApiController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AddFlightRequest.cs" />
+    <Compile Include="Models\FlightRequest.cs" />
     <Compile Include="Models\Airport.cs" />
     <Compile Include="Models\AirportStorage.cs" />
     <Compile Include="Models\Flight.cs" />
     <Compile Include="Models\FlightStorage.cs" />
+    <Compile Include="Models\PageResult.cs" />
     <Compile Include="Models\SearchFlightRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
