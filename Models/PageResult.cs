@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace FlightPlannerVS.Models
 {
-    public class PageResult
+    public class PageResult<T> where T : Flight
     {
-        public int page { get; set; }
-        public int totalItems { get; set; }
+        public int Page { get; set; }
+        public int TotalItems { get; set; }
 
-        public List<Flight> items = new List<Flight>();
+        public List<T> Items = new List<T>();
 
     }
 }

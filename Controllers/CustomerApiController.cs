@@ -1,82 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Http;
-using FlightPlannerVS.Attributes;
 using FlightPlannerVS.Models;
-using Microsoft.Ajax.Utilities;
 
 namespace FlightPlannerVS.Controllers
 {
     
     public class CustomerApiController : ApiController
     {
+        private static readonly object _locker = new object();
         [Route ("api/airports")]
         [HttpGet]
         public IHttpActionResult GetSearchAirport(string search)
         {
-            search = search.ToUpper().Trim();
-            var result = new List<Airport>();
-
-            foreach (var x in FlightStorage.AllFlights)
+            lock (_locker)
             {
-                if (x.To.AirportName.ToUpper().Contains(search) ||
-                    x.To.City.ToUpper().Contains(search) || 
-                    x.To.Country.ToUpper().Contains(search))
+                search = search.ToUpper().Trim();
+                var result = new List<Airport>();
+
+                foreach (var x in FlightStorage.AllFlights)
                 {
-                    result.Add(x.To);
+                    if (x.To.AirportName.ToUpper().Contains(search) ||
+                        x.To.City.ToUpper().Contains(search) ||
+                        x.To.Country.ToUpper().Contains(search))
+                    {
+                        result.Add(x.To);
+                    }
+
+                    if (x.From.AirportName.ToUpper().Contains(search) ||
+                        x.From.City.ToUpper().Contains(search) ||
+                        x.From.Country.ToUpper().Contains(search))
+                    {
+                        result.Add(x.From);
+                    }
                 }
 
-                if (x.From.AirportName.ToUpper().Contains(search) ||
-                    x.From.City.ToUpper().Contains(search) ||
-                    x.From.Country.ToUpper().Contains(search))
-                {
-                    result.Add(x.From);
-                }
+                return result.Count == 0 ? (IHttpActionResult) NotFound() : Ok(result);
             }
-          
-            return result.Count == 0 ? (IHttpActionResult)NotFound() : Ok(result);
         }
 
         [Route("api/flights/search")]
         [HttpPost]
         public IHttpActionResult SearchFlights(SearchFlightRequest request)
         {
-            if (request == null ||
-                request.To == request.From ||
-                string.IsNullOrEmpty(request.To) ||
-                string.IsNullOrEmpty(request.From) ||
-                string.IsNullOrEmpty(request.DepartureDate)
-            )
+            lock (_locker)
             {
-                return BadRequest();
-            }
-
-            var page = new PageResult();
-
-            foreach (var flight in FlightStorage.AllFlights)
-            {
-                if (flight.From.AirportName == request.From &&
-                    flight.To.AirportName == request.To &&
-                    flight.DepartureTime == request.DepartureDate)
+                if (request == null ||
+                    request.To == request.From ||
+                    string.IsNullOrEmpty(request.To) ||
+                    string.IsNullOrEmpty(request.From) ||
+                    string.IsNullOrEmpty(request.DepartureDate)
+                )
                 {
-                    page.items.Add(flight);
+                    return BadRequest();
                 }
-            }
 
-            return Ok(page);
+                var page = new PageResult<Flight>();
+
+                foreach (var flight in FlightStorage.AllFlights)
+                {
+                    if (flight.From.AirportName == request.From &&
+                        flight.To.AirportName == request.To &&
+                        flight.DepartureTime.Substring(0,10) == request.DepartureDate)
+                    {
+                        page.TotalItems++;
+                        page.Items.Add(flight);
+                    }
+                }
+
+                return Ok(page);
+            }
         }
 
         [Route("api/flights/{id}")]
         [HttpGet]
         public IHttpActionResult SearchFlightsById(int id)
         {
-            var flight = FlightStorage.FindFlight(id);
+            lock (_locker)
+            {
+                var flight = FlightStorage.FindFlight(id);
 
-            return flight == null ? (IHttpActionResult)NotFound() : Ok(flight);
+                return flight == null ? (IHttpActionResult) NotFound() : Ok(flight);
+            }
         }
     }
 }

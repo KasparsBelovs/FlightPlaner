@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+﻿using System.Web.Http;
 using FlightPlannerVS.Models;
 
 namespace FlightPlannerVS.Controllers
@@ -15,8 +10,7 @@ namespace FlightPlannerVS.Controllers
         public IHttpActionResult Clear()
         { 
             FlightStorage.AllFlights.Clear();
-            AirportStorage.AllAirports.Clear();
-            
+
             return Ok();
         }
     }

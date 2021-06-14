@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web;
 using System.Web.Http;
 using FlightPlannerVS.Attributes;
 using FlightPlannerVS.Models;
@@ -14,59 +10,69 @@ namespace FlightPlannerVS.Controllers
     [BasicAuthentication]
     public class AdminApiController : ApiController
     {
+        private static readonly object _locker = new object();
 
         [Route("admin-api/flights/{id}")]
         public IHttpActionResult GetFlights(int id)
         {
-            var flight = FlightStorage.FindFlight(id);
-            return flight == null ? (IHttpActionResult) NotFound() : Ok();
+            lock (_locker)
+            {
+                var flight = FlightStorage.FindFlight(id);
+                return flight == null ? (IHttpActionResult) NotFound() : Ok();
+            }
         }
 
         [Route("admin-api/flights")]
         [HttpPut]
         public IHttpActionResult PutFlight(FlightRequest newFlight)
         {
-            if(IsFlightsPropNullOrEmpty(newFlight))
+            lock (_locker)
             {
-                return BadRequest("Check properties, they can't be null or empty");
+                if (IsFlightsPropNullOrEmpty(newFlight))
+                {
+                    return BadRequest("Properties can't be null or empty");
+                }
+
+                if (IsArrivalTimeLMoreThanDepartureTime(newFlight))
+                {
+                    return BadRequest("Departure and Arrival Time error");
+                }
+
+                if (IsFromAndToAirportsAreSame(newFlight))
+                {
+                    return BadRequest("City From and To are the same");
+                }
+
+                if (IsFlightAlreadyInList(newFlight))
+                {
+                    return Conflict();
+                }
+
+                var output = new Flight
+                {
+                    ArrivalTime = newFlight.ArrivalTime,
+                    DepartureTime = newFlight.DepartureTime,
+                    From = newFlight.From,
+                    To = newFlight.To,
+                    Carrier = newFlight.Carrier
+                };
+
+                FlightStorage.AddFlight(output);
+
+                return Created("", output);
             }
-
-            if (IsArrivalTimeLMoreThanDepartureTime(newFlight))
-            {
-                return BadRequest("Check Departure and Arrival Time");
-            }
-            
-            if (IsFromAndToAirportsAreSame(newFlight))
-            {
-                return BadRequest("City From and To are the same");
-            }
-
-            if (IsFlightAlreadyInList(newFlight))
-            {
-                return Conflict();
-            }
-
-            var output = new Flight
-            {
-                ArrivalTime = newFlight.ArrivalTime,
-                DepartureTime = newFlight.DepartureTime,
-                From = newFlight.From,
-                To = newFlight.To,
-                Carrier = newFlight.Carrier
-            };
-
-            FlightStorage.AddFlight(output);
-
-            return Created("", output);
         }
 
         [Route("admin-api/flights/{id}")]
         [HttpDelete]
         public IHttpActionResult DeleteFlight(int id)
         {
-            FlightStorage.DeleteFlight(id);
+            lock (_locker)
+            {
+                FlightStorage.DeleteFlight(id);
 
-            return Ok();
+                return Ok();
+            }
         }
 
         public bool IsFlightsPropNullOrEmpty(FlightRequest newFlight)
