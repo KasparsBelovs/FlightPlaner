@@ -39,15 +39,17 @@ namespace FlightPlannerVS.Models
 
         public static Flight MakeFlight(FlightRequest request)
         {
-            return new Flight 
+            lock (Locker.Lock)
             {
-                ArrivalTime = request.ArrivalTime,
-                DepartureTime = request.DepartureTime,
-                From = request.From,
-                To = request.To,
-                Carrier = request.Carrier
-            };
-            
+                return new Flight
+                {
+                    ArrivalTime = request.ArrivalTime,
+                    DepartureTime = request.DepartureTime,
+                    From = request.From,
+                    To = request.To,
+                    Carrier = request.Carrier
+                };
+            }
         }
 
         public static List<Airport> SearchAllAirports(string search)
@@ -77,6 +79,7 @@ namespace FlightPlannerVS.Models
                 return output;
             }
         }
+
         public static PageResult<Flight> GetSearchFlightRequestPage(SearchFlightRequest request)
         {
             lock (Locker.Lock)
@@ -100,30 +103,38 @@ namespace FlightPlannerVS.Models
 
         public static bool IsFlightsPropNullOrEmpty(FlightRequest request)
         {
-            return request.To == null ||
-                   string.IsNullOrEmpty(request.To?.AirportName) ||
-                   string.IsNullOrEmpty(request.To?.City) ||
-                   string.IsNullOrEmpty(request.To?.Country) ||
-                   request.From == null ||
-                   string.IsNullOrEmpty(request.From?.AirportName) ||
-                   string.IsNullOrEmpty(request.From?.City) ||
-                   string.IsNullOrEmpty(request.From?.Country) ||
-                   string.IsNullOrEmpty(request.Carrier) ||
-                   string.IsNullOrEmpty(request.ArrivalTime) ||
-                   string.IsNullOrEmpty(request.DepartureTime);
-            
+            lock (Locker.Lock)
+            {
+                return request.To == null ||
+                       string.IsNullOrEmpty(request.To?.AirportName) ||
+                       string.IsNullOrEmpty(request.To?.City) ||
+                       string.IsNullOrEmpty(request.To?.Country) ||
+                       request.From == null ||
+                       string.IsNullOrEmpty(request.From?.AirportName) ||
+                       string.IsNullOrEmpty(request.From?.City) ||
+                       string.IsNullOrEmpty(request.From?.Country) ||
+                       string.IsNullOrEmpty(request.Carrier) ||
+                       string.IsNullOrEmpty(request.ArrivalTime) ||
+                       string.IsNullOrEmpty(request.DepartureTime);
+            }
         }
 
         public static bool IsArrivalTimeLessOrEqualToDepartureTime(FlightRequest request)
         {
-            return DateTime.Compare(
-                DateTime.Parse(request.ArrivalTime),
-                DateTime.Parse(request.DepartureTime)) <= 0;
+            lock (Locker.Lock)
+            {
+              return DateTime.Compare(
+                  DateTime.Parse(request.ArrivalTime), 
+                  DateTime.Parse(request.DepartureTime)) <= 0;
+            }
         }
 
         public static bool IsFromAndToAirportsAreSame(FlightRequest request)
         {
-            return request.To.AirportName.ToLower().Trim() == request.From.AirportName.ToLower().Trim();
+            lock (Locker.Lock)
+            {
+                return request.To.AirportName.ToLower().Trim() == request.From.AirportName.ToLower().Trim();
+            }
         }
 
         public static bool IsFlightAlreadyInList(FlightRequest request)
@@ -146,11 +157,14 @@ namespace FlightPlannerVS.Models
 
         public static bool IsSearchFlightRequestInvalid(SearchFlightRequest request)
         {
-            return request == null ||
-                   request.To == request.From ||
-                   string.IsNullOrEmpty(request.To) ||
-                   string.IsNullOrEmpty(request.From) ||
-                   string.IsNullOrEmpty(request.DepartureDate);
+            lock (Locker.Lock)
+            {
+                return request == null ||
+                       request.To == request.From ||
+                       string.IsNullOrEmpty(request.To) ||
+                       string.IsNullOrEmpty(request.From) ||
+                       string.IsNullOrEmpty(request.DepartureDate);
+            }
         }
     }
 }
