@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Web;
+using System.Web.Http.Results;
+using FlightPlannerVS.DbContext;
 
 namespace FlightPlannerVS.Models
 {
@@ -15,8 +19,13 @@ namespace FlightPlannerVS.Models
             {
                 flight.Id = _id;
                 _id++;
-               AllFlights.Add(flight);
-    
+               //AllFlights.Add(flight);
+               using (var ctx = new FlightPlannerDbContext())
+               {
+                   ctx.Flights.Add(flight);
+                   ctx.SaveChanges();
+               }
+
                return flight;
             }
         }
@@ -25,7 +34,11 @@ namespace FlightPlannerVS.Models
         {
             lock (Locker.Lock)
             {
-                return AllFlights.FirstOrDefault(x => x.Id == id);
+                using (var ctx = new FlightPlannerDbContext())
+                {
+                    return ctx.Flights.Include(x => x.To).Include(x => x.From).SingleOrDefault(x => x.Id == id);
+                }
+                   // return AllFlights.FirstOrDefault(x => x.Id == id);
             }
         }
 
@@ -33,7 +46,18 @@ namespace FlightPlannerVS.Models
         {
             lock (Locker.Lock)
             {
-                AllFlights.Remove(FindFlight(id));
+                using (var ctx = new FlightPlannerDbContext())
+                {
+                    var flight = FindFlight(id);
+                    if (flight != null)
+                    {
+                        ctx.Flights.Attach(flight);
+                        ctx.Flights.Remove(flight);
+                        ctx.SaveChanges();
+                    }
+                }
+
+                //AllFlights.Remove(FindFlight(id));
             }
         }
 

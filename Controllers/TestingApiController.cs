@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using FlightPlannerVS.DbContext;
 using FlightPlannerVS.Models;
 
 namespace FlightPlannerVS.Controllers
@@ -9,7 +10,12 @@ namespace FlightPlannerVS.Controllers
         [HttpPost]
         public IHttpActionResult Clear()
         { 
-            FlightStorage.AllFlights.Clear();
+            //FlightStorage.AllFlights.Clear();
+            using (var ctx = new FlightPlannerDbContext())
+            {
+                ctx.Flights.SqlQuery("DELETE FROM Flights;");
+                ctx.Flights.SqlQuery("DELETE FROM Airports;");
+            }
 
             return Ok();
         }
