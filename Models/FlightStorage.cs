@@ -80,27 +80,30 @@ namespace FlightPlannerVS.Models
         {
             lock (Locker.Lock)
             {
-                var output = new List<Airport>();
-                search = search.ToUpper().Trim();
-
-                foreach (var x in FlightStorage.AllFlights)
+                using (var ctx = new FlightPlannerDbContext())
                 {
-                    if (x.To.AirportName.ToUpper().Contains(search) ||
-                        x.To.City.ToUpper().Contains(search) ||
-                        x.To.Country.ToUpper().Contains(search))
+                    var output = new List<Airport>();
+                    search = search.ToUpper().Trim();
+
+                    foreach (var x in ctx.Flights.Include(x => x.To).Include(x => x.From))
                     {
-                        output.Add(x.To);
+                        if (x.To.AirportName.ToUpper().Contains(search) ||
+                            x.To.City.ToUpper().Contains(search) ||
+                            x.To.Country.ToUpper().Contains(search))
+                        {
+                            output.Add(x.To);
+                        }
+
+                        if (x.From.AirportName.ToUpper().Contains(search) ||
+                            x.From.City.ToUpper().Contains(search) ||
+                            x.From.Country.ToUpper().Contains(search))
+                        {
+                            output.Add(x.From);
+                        }
                     }
 
-                    if (x.From.AirportName.ToUpper().Contains(search) ||
-                        x.From.City.ToUpper().Contains(search) ||
-                        x.From.Country.ToUpper().Contains(search))
-                    {
-                        output.Add(x.From);
-                    }
+                    return output;
                 }
-
-                return output;
             }
         }
 
@@ -108,20 +111,23 @@ namespace FlightPlannerVS.Models
         {
             lock (Locker.Lock)
             {
-                var page = new PageResult<Flight>();
-
-                foreach (var flight in FlightStorage.AllFlights)
+                using (var ctx = new FlightPlannerDbContext())
                 {
-                    if (flight.From.AirportName == request.From &&
-                        flight.To.AirportName == request.To &&
-                        flight.DepartureTime.Substring(0, 10) == request.DepartureDate)
-                    {
-                        page.TotalItems++;
-                        page.Items.Add(flight);
-                    }
-                }
+                    var page = new PageResult<Flight>();
 
-                return page;
+                    foreach (var flight in ctx.Flights.Include(x => x.From).Include(x => x.To))
+                    {
+                        if (flight.From.AirportName == request.From &&
+                            flight.To.AirportName == request.To &&
+                            flight.DepartureTime.Substring(0, 10) == request.DepartureDate)
+                        {
+                            page.TotalItems++;
+                            page.Items.Add(flight);
+                        }
+                    }
+
+                    return page;
+                }
             }
         }
 
@@ -165,17 +171,21 @@ namespace FlightPlannerVS.Models
         {
             lock (Locker.Lock)
             {
-                return (AllFlights.Any(x =>
-                    x.From.AirportName == request.From.AirportName &&
-                    x.From.City == request.From.City &&
-                    x.From.Country == request.From.Country &&
-                    x.To.AirportName == request.To.AirportName &&
-                    x.To.City == request.To.City &&
-                    x.To.Country == request.To.Country &&
-                    x.Carrier == request.Carrier &&
-                    x.ArrivalTime == request.ArrivalTime &&
-                    x.DepartureTime == request.DepartureTime
-                ));
+                using (var ctx = new FlightPlannerDbContext())
+                { 
+                    return ctx.Flights.Any(x => 
+                        x.From.AirportName == request.From.AirportName && 
+                        x.From.City == request.From.City && 
+                        x.From.Country == request.From.Country && 
+                        x.To.AirportName == request.To.AirportName && 
+                        x.To.City == request.To.City && 
+                        x.To.Country == request.To.Country && 
+                        x.Carrier == request.Carrier && 
+                        x.ArrivalTime == request.ArrivalTime && 
+                        x.DepartureTime == request.DepartureTime
+                     );
+                }
+
             }
         }
 

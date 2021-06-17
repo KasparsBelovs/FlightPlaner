@@ -9,15 +9,19 @@ namespace FlightPlannerVS.Controllers
         [Route("testing-api/clear")]
         [HttpPost]
         public IHttpActionResult Clear()
-        { 
-            //FlightStorage.AllFlights.Clear();
-            using (var ctx = new FlightPlannerDbContext())
+        {
+            lock (Locker.Lock)
             {
-                ctx.Flights.SqlQuery("DELETE FROM Flights;");
-                ctx.Flights.SqlQuery("DELETE FROM Airports;");
-            }
+                using (var ctx = new FlightPlannerDbContext())
+                { 
+                    ctx.Flights.RemoveRange(ctx.Flights); 
+                    ctx.Airports.RemoveRange(ctx.Airports);
+                    ctx.SaveChanges();
+                }
 
-            return Ok();
+                return Ok();
+            }
+            //FlightStorage.AllFlights.Clear();
         }
     }
 }
