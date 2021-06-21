@@ -19,14 +19,13 @@ namespace FlightPlannerVS.Models
             {
                 flight.Id = _id;
                 _id++;
-               //AllFlights.Add(flight);
-               using (var ctx = new FlightPlannerDbContext())
-               {
+                using (var ctx = new FlightPlannerDbContext())
+                {
                    ctx.Flights.Add(flight);
                    ctx.SaveChanges();
-               }
-
-               return flight;
+                }
+                
+                return flight;
             }
         }
 
@@ -38,7 +37,6 @@ namespace FlightPlannerVS.Models
                 {
                     return ctx.Flights.Include(x => x.To).Include(x => x.From).SingleOrDefault(x => x.Id == id);
                 }
-                   // return AllFlights.FirstOrDefault(x => x.Id == id);
             }
         }
 

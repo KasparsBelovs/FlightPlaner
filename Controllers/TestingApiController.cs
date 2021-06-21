@@ -21,7 +21,6 @@ namespace FlightPlannerVS.Controllers
 
                 return Ok();
             }
-            //FlightStorage.AllFlights.Clear();
         }
     }
 }
