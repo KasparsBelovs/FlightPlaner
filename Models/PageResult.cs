@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FlightPlannerVS.Core.Models;
 
 namespace FlightPlannerVS.Models
 {

@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using FlightPlannerVS.Core.Dto;
 using FlightPlannerVS.Models;
 
 namespace FlightPlannerVS.Controllers

@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -53,6 +56,15 @@
       <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\StructureMap.4.7.1\lib\net45\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\structuremap.web.4.0.0.315\lib\net40\StructureMap.Web.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -115,6 +127,9 @@
       <Private>True</Private>
       <HintPath>packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>packages\WebActivatorEx.2.0.5\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
@@ -130,9 +145,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutoMapperConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\StructuremapMvc.cs" />
+    <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
@@ -166,26 +184,19 @@
     <Compile Include="Controllers\AdminApiController.cs" />
     <Compile Include="Controllers\CustomerApiController.cs" />
     <Compile Include="Controllers\TestingApiController.cs" />
-    <Compile Include="DbContext\FlightPlannerDbContext.cs" />
+    <Compile Include="DependencyResolution\ControllerConvention.cs" />
+    <Compile Include="DependencyResolution\DefaultRegistry.cs" />
+    <Compile Include="DependencyResolution\IoC.cs" />
+    <Compile Include="DependencyResolution\StructureMapDependencyScope.cs" />
+    <Compile Include="DependencyResolution\StructureMapScopeModule.cs" />
+    <Compile Include="DependencyResolution\StructureMapWebApiDependencyResolver.cs" />
+    <Compile Include="DependencyResolution\StructureMapWebApiDependencyScope.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202106161005104_Init.cs" />
-    <Compile Include="Migrations\202106161005104_Init.designer.cs">
-      <DependentUpon>202106161005104_Init.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202106171258316_Init1.cs" />
-    <Compile Include="Migrations\202106171258316_Init1.designer.cs">
-      <DependentUpon>202106171258316_Init1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\FlightRequest.cs" />
-    <Compile Include="Models\Airport.cs" />
-    <Compile Include="Models\Flight.cs" />
     <Compile Include="Models\FlightStorage.cs" />
     <Compile Include="Models\Locker.cs" />
     <Compile Include="Models\PageResult.cs" />
-    <Compile Include="Models\SearchFlightRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -272,12 +283,18 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202106161005104_Init.resx">
-      <DependentUpon>202106161005104_Init.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202106171258316_Init1.resx">
-      <DependentUpon>202106171258316_Init1.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\FlightPlannerVS.Core\FlightPlannerVS.Core.csproj">
+      <Project>{69284ce9-ecb9-4260-8f53-cbdcf8f7e80e}</Project>
+      <Name>FlightPlannerVS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlightPlannerVS.Data\FlightPlannerVS.Data.csproj">
+      <Project>{24f28190-ba55-4897-8b4d-1d29dc3e5de7}</Project>
+      <Name>FlightPlannerVS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FlightPlannerVS.Services\FlightPlannerVS.Services.csproj">
+      <Project>{79fb2e6d-dc0b-4142-a386-12b72bafb81f}</Project>
+      <Name>FlightPlannerVS.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

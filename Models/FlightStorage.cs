@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
-using System.Web.Http.Results;
-using FlightPlannerVS.DbContext;
+using FlightPlannerVS.Core.Dto;
+using FlightPlannerVS.Core.Models;
+using FlightPlannerVS.Data;
+
 
 namespace FlightPlannerVS.Models
 {
