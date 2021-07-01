@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web.Http;
 using FlightPlannerVS.Attributes;
 using FlightPlannerVS.Core.Dto;
-using FlightPlannerVS.Core.Models;
 using FlightPlannerVS.Core.Services;
 using FlightPlannerVS.Models;
 
@@ -16,10 +15,6 @@ namespace FlightPlannerVS.Controllers
     {
         private readonly IFlightService _flightService;
         private readonly IEnumerable<IValidator> _validators;
-
-        //public AdminApiController()
-        //{
-        //}
 
         public AdminApiController(IFlightService flightService, IEnumerable<IValidator> validators)
         {

@@ -15,6 +15,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using AutoMapper;
+using FlightPlannerVS.App_Start;
 using FlightPlannerVS.Core.Services;
 using FlightPlannerVS.Data;
 using FlightPlannerVS.Services;
@@ -40,6 +42,9 @@ namespace FlightPlannerVS.DependencyResolution {
             For(typeof(IEntityService<>)).Use(typeof(EntityService<>));
             For<IFlightService>().Use<FlightService>();
             For<IFlightPlannerDbContext>().Use<FlightPlannerDbContext>();
+
+            var config = AutoMapperConfig.GetMapper();
+            For<IMapper>().Use(config);
         }
 
         #endregion
