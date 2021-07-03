@@ -10,10 +10,56 @@ namespace FlightPlannerVS.App_Start
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<FlightRequest, Flight>().ForMember(x =>
-                    x.Id, o => o.Ignore());
+
+                cfg.CreateMap<FlightRequest, Flight>()
+                    .ForMember(d => d.Id,
+                        o => o.Ignore());
                 cfg.CreateMap<Flight, FlightRequest>();
-                
+
+                cfg.CreateMap<AirportRequest, Airport>()
+                    .ForMember(d => d.AirportName,
+                        o => o
+                            .MapFrom(s => s.Airport))
+                    .ForMember(d => d.Id,
+                        o => o.Ignore());
+                cfg.CreateMap<Airport, AirportRequest>()
+                    .ForMember(d => d.Airport,
+                        o => o
+                            .MapFrom(s => s.AirportName));
+
+                cfg.CreateMap<Flight, FlightResponse>();
+                cfg.CreateMap<FlightResponse, Flight>();
+
+                cfg.CreateMap<AirportResponse, Airport>()
+                    .ForMember(d => d.AirportName,
+                        o => o
+                            .MapFrom(s => s.Airport))
+                    .ForMember(d => d.Id,
+                        s => s.Ignore());
+                cfg.CreateMap<Airport, AirportResponse>()
+                    .ForMember(d => d.Airport,
+                        o => o
+                            .MapFrom(s => s.AirportName));
+
+                //cfg.CreateMap<AirportRequest, AirportResponse>();
+                //cfg.CreateMap<AirportResponse, AirportRequest>()
+                //    .ForMember(d => d.Id,
+                //        o => o.Ignore());
+
+                //cfg.CreateMap<Airport, AirportResponse>()
+                //    .ForMember(d => d.Airport,
+                //        o => o
+                //            .MapFrom(s => s.AirportName));
+                //cfg.CreateMap<AirportResponse, Airport>()
+                //    .ForMember(d => d.Id,
+                //        o => o.Ignore());
+
+                //cfg.CreateMap<FlightRequest, Flight>();
+                //cfg.CreateMap<Flight, FlightRequest>();
+
+                //cfg.CreateMap<FlightRequest, FlightResponse>();
+
+                //cfg.CreateMap<Flight, FlightResponse>();
             });
 
             config.AssertConfigurationIsValid();

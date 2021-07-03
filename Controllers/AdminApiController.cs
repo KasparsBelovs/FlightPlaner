@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using AutoMapper;
 using FlightPlannerVS.Attributes;
 using FlightPlannerVS.Core.Dto;
+using FlightPlannerVS.Core.Models;
 using FlightPlannerVS.Core.Services;
 using FlightPlannerVS.Models;
 
@@ -15,11 +17,13 @@ namespace FlightPlannerVS.Controllers
     {
         private readonly IFlightService _flightService;
         private readonly IEnumerable<IValidator> _validators;
+        private readonly IMapper _mapper;
 
-        public AdminApiController(IFlightService flightService, IEnumerable<IValidator> validators)
+        public AdminApiController(IFlightService flightService, IEnumerable<IValidator> validators, IMapper mapper)
         {
             _flightService = flightService;
             _validators = validators;
+            _mapper = mapper;
         }
 
         [Route("admin-api/flights/{id}")]
@@ -55,12 +59,13 @@ namespace FlightPlannerVS.Controllers
             //    return Conflict();
             //}
 
-            var flight = FlightStorage.MakeFlight(request);
-
+            var flight = _mapper.Map(request, new Flight());
             _flightService.Create(flight);
+
+            var response = _mapper.Map(flight, new FlightResponse());
            // FlightStorage.AddFlight(flight);
 
-            return Created("", flight);
+            return Created("", response);
             
         }
 

@@ -60,20 +60,20 @@ namespace FlightPlannerVS.Models
             }
         }
 
-        public static Flight MakeFlight(FlightRequest request)
-        {
-            lock (Locker.Lock)
-            {
-                return new Flight
-                {
-                    ArrivalTime = request.ArrivalTime,
-                    DepartureTime = request.DepartureTime,
-                    From = request.From,
-                    To = request.To,
-                    Carrier = request.Carrier
-                };
-            }
-        }
+        //public static Flight MakeFlight(FlightRequest request)
+        //{
+        //    lock (Locker.Lock)
+        //    {
+        //        return new Flight
+        //        {
+        //            ArrivalTime = request.ArrivalTime,
+        //            DepartureTime = request.DepartureTime,
+        //            From = request.From,
+        //            To = request.To,
+        //            Carrier = request.Carrier
+        //        };
+        //    }
+        //}
 
         public static List<Airport> SearchAllAirports(string search)
         {
@@ -130,23 +130,23 @@ namespace FlightPlannerVS.Models
             }
         }
 
-        public static bool IsFlightsPropNullOrEmpty(FlightRequest request)
-        {
-            lock (Locker.Lock)
-            {
-                return request.To == null ||
-                       string.IsNullOrEmpty(request.To?.AirportName) ||
-                       string.IsNullOrEmpty(request.To?.City) ||
-                       string.IsNullOrEmpty(request.To?.Country) ||
-                       request.From == null ||
-                       string.IsNullOrEmpty(request.From?.AirportName) ||
-                       string.IsNullOrEmpty(request.From?.City) ||
-                       string.IsNullOrEmpty(request.From?.Country) ||
-                       string.IsNullOrEmpty(request.Carrier) ||
-                       string.IsNullOrEmpty(request.ArrivalTime) ||
-                       string.IsNullOrEmpty(request.DepartureTime);
-            }
-        }
+        //public static bool IsFlightsPropNullOrEmpty(FlightRequest request)
+        //{
+        //    lock (Locker.Lock)
+        //    {
+        //        return request.To == null ||
+        //               string.IsNullOrEmpty(request.To?.AirportName) ||
+        //               string.IsNullOrEmpty(request.To?.City) ||
+        //               string.IsNullOrEmpty(request.To?.Country) ||
+        //               request.From == null ||
+        //               string.IsNullOrEmpty(request.From?.AirportName) ||
+        //               string.IsNullOrEmpty(request.From?.City) ||
+        //               string.IsNullOrEmpty(request.From?.Country) ||
+        //               string.IsNullOrEmpty(request.Carrier) ||
+        //               string.IsNullOrEmpty(request.ArrivalTime) ||
+        //               string.IsNullOrEmpty(request.DepartureTime);
+        //    }
+        //}
 
         public static bool IsArrivalTimeLessOrEqualToDepartureTime(FlightRequest request)
         {
@@ -158,35 +158,35 @@ namespace FlightPlannerVS.Models
             }
         }
 
-        public static bool IsFromAndToAirportsAreSame(FlightRequest request)
-        {
-            lock (Locker.Lock)
-            {
-                return request.To.AirportName.ToLower().Trim() == request.From.AirportName.ToLower().Trim();
-            }
-        }
+        //public static bool IsFromAndToAirportsAreSame(FlightRequest request)
+        //{
+        //    lock (Locker.Lock)
+        //    {
+        //        return request.To.AirportName.ToLower().Trim() == request.From.AirportName.ToLower().Trim();
+        //    }
+        //}
 
-        public static bool IsFlightAlreadyInList(FlightRequest request)
-        {
-            lock (Locker.Lock)
-            {
-                using (var ctx = new FlightPlannerDbContext())
-                { 
-                    return ctx.Flights.Any(x => 
-                        x.From.AirportName == request.From.AirportName && 
-                        x.From.City == request.From.City && 
-                        x.From.Country == request.From.Country && 
-                        x.To.AirportName == request.To.AirportName && 
-                        x.To.City == request.To.City && 
-                        x.To.Country == request.To.Country && 
-                        x.Carrier == request.Carrier && 
-                        x.ArrivalTime == request.ArrivalTime && 
-                        x.DepartureTime == request.DepartureTime
-                     );
-                }
+        //public static bool IsFlightAlreadyInList(FlightRequest request)
+        //{
+        //    lock (Locker.Lock)
+        //    {
+        //        using (var ctx = new FlightPlannerDbContext())
+        //        { 
+        //            return ctx.Flights.Any(x => 
+        //                x.From.AirportName == request.From.AirportName && 
+        //                x.From.City == request.From.City && 
+        //                x.From.Country == request.From.Country && 
+        //                x.To.AirportName == request.To.AirportName && 
+        //                x.To.City == request.To.City && 
+        //                x.To.Country == request.To.Country && 
+        //                x.Carrier == request.Carrier && 
+        //                x.ArrivalTime == request.ArrivalTime && 
+        //                x.DepartureTime == request.DepartureTime
+        //             );
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         public static bool IsSearchFlightRequestInvalid(SearchFlightRequest request)
         {
