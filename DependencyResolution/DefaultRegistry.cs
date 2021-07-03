@@ -43,6 +43,7 @@ namespace FlightPlannerVS.DependencyResolution {
             For<IFlightService>().Use<FlightService>();
             For<IAirportService>().Use<AirportService>();
             For<IFlightPlannerDbContext>().Use<FlightPlannerDbContext>();
+            
 
             var config = AutoMapperConfig.GetMapper();
             For<IMapper>().Use(config);
