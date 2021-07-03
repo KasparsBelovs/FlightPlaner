@@ -41,6 +41,9 @@ namespace FlightPlannerVS.Controllers
             if (!_validators.All(x => x.Validate(request)))
                 return BadRequest();
 
+            if (_flightService.IsFlightInDb(request))
+                return Conflict();
+
             var flight = _mapper.Map(request, new Flight());
             _flightService.Create(flight);
 
@@ -51,7 +54,11 @@ namespace FlightPlannerVS.Controllers
         [HttpDelete]
         public IHttpActionResult DeleteFlight(int id)
         {
-            FlightStorage.DeleteFlight(id);
+            var flight = _flightService.GetById(id);
+            if (flight != null)
+            {
+                _flightService.Delete(flight);
+            }
 
             return Ok();
         }
