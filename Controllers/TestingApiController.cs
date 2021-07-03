@@ -1,7 +1,5 @@
 ﻿using System.Web.Http;
 using FlightPlannerVS.Core.Services;
-using FlightPlannerVS.Data;
-using FlightPlannerVS.Models;
 
 namespace FlightPlannerVS.Controllers
 {

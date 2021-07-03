@@ -1,21 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Http;
 using AutoMapper;
 using FlightPlannerVS.Core.Dto;
 using FlightPlannerVS.Core.Services;
-using FlightPlannerVS.Models;
+using FlightPlannerVS.Services.Validators;
 
 namespace FlightPlannerVS.Controllers
 {
-    
     public class CustomerApiController : ApiController
     {
         private readonly IAirportService _airportService;
+        private readonly IFlightService _flightService;
         private readonly IMapper _mapper;
-        public CustomerApiController(IAirportService airportService, IMapper mapper)
+        public CustomerApiController(IAirportService airportService, IFlightService flightService, IMapper mapper)
         {
             _airportService = airportService;
+            _flightService = flightService;
             _mapper = mapper;
         }
 
@@ -28,9 +28,6 @@ namespace FlightPlannerVS.Controllers
                 .Select(airport => _mapper.Map(airport, new AirportResponse()))
                 .ToList();
 
-
-            //var result = FlightStorage.SearchAllAirports(search);
-
             return airportResponseList.Count == 0 ? (IHttpActionResult) NotFound() : Ok(airportResponseList);
         }
 
@@ -38,22 +35,27 @@ namespace FlightPlannerVS.Controllers
         [HttpPost]
         public IHttpActionResult SearchFlights(SearchFlightRequest request)
         {
-        
-            if (FlightStorage.IsSearchFlightRequestInvalid(request))
-            {
+            if (!SearchFlightValidator.Validate(request))
                 return BadRequest();
-            }
+      
+            var flightList = _flightService.GetSearchFlightRequestPage(request);
+            var flightResponseList = flightList.Select(flight => _mapper.Map(flight, new FlightResponse())).ToList();
+            var page = new PageResultResponse()
+            {
+                TotalItems = flightResponseList.Count,
+                Items = flightResponseList
+            };
 
-            return Ok(FlightStorage.GetSearchFlightRequestPage(request));
+            return Ok(page);
         }
 
         [Route("api/flights/{id}")]
         [HttpGet]
         public IHttpActionResult SearchFlightsById(int id)
         {
-            var flight = FlightStorage.FindFlight(id);
+            var flight = _flightService.FindFlight(id);
 
-            return flight == null ? (IHttpActionResult) NotFound() : Ok(flight);
+            return flight == null ? (IHttpActionResult) NotFound() : Ok(_mapper.Map(flight, new FlightResponse()));
         }
     }
 }
