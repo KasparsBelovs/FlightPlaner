@@ -6,9 +6,6 @@ using FlightPlannerVS.Attributes;
 using FlightPlannerVS.Core.Dto;
 using FlightPlannerVS.Core.Models;
 using FlightPlannerVS.Core.Services;
-using FlightPlannerVS.Models;
-using FlightPlannerVS.Services.Validators;
-
 
 namespace FlightPlannerVS.Controllers
 {
