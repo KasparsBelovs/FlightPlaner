@@ -20,6 +20,7 @@ using FlightPlannerVS.App_Start;
 using FlightPlannerVS.Core.Services;
 using FlightPlannerVS.Data;
 using FlightPlannerVS.Services;
+using FlightPlannerVS.Services.Validators;
 using StructureMap;
 
 namespace FlightPlannerVS.DependencyResolution {
@@ -42,6 +43,13 @@ namespace FlightPlannerVS.DependencyResolution {
             For(typeof(IEntityService<>)).Use(typeof(EntityService<>));
             For<IFlightService>().Use<FlightService>();
             For<IAirportService>().Use<AirportService>();
+            For<IValidator>().Use<AirportFromValidator>();
+            For<IValidator>().Use<AirportToValidator>();
+            For<IValidator>().Use<ArrivalDateValidator>();
+            For<IValidator>().Use<CarrierValidator>();
+            For<IValidator>().Use<DepartureDateValidator>();
+            For<IValidator>().Use<DateIntervalValidator>();
+            For<IValidator>().Use<AirportCodesValidator>();
             For<IFlightPlannerDbContext>().Use<FlightPlannerDbContext>();
             
 

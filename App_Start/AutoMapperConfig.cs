@@ -41,25 +41,6 @@ namespace FlightPlannerVS.App_Start
                         o => o
                             .MapFrom(s => s.AirportName));
 
-                //cfg.CreateMap<AirportRequest, AirportResponse>();
-                //cfg.CreateMap<AirportResponse, AirportRequest>()
-                //    .ForMember(d => d.Id,
-                //        o => o.Ignore());
-
-                //cfg.CreateMap<Airport, AirportResponse>()
-                //    .ForMember(d => d.Airport,
-                //        o => o
-                //            .MapFrom(s => s.AirportName));
-                //cfg.CreateMap<AirportResponse, Airport>()
-                //    .ForMember(d => d.Id,
-                //        o => o.Ignore());
-
-                //cfg.CreateMap<FlightRequest, Flight>();
-                //cfg.CreateMap<Flight, FlightRequest>();
-
-                //cfg.CreateMap<FlightRequest, FlightResponse>();
-
-                //cfg.CreateMap<Flight, FlightResponse>();
             });
 
             config.AssertConfigurationIsValid();

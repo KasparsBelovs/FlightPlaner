@@ -22,20 +22,8 @@ namespace FlightPlannerVS.Controllers
         {
             _flightService.DeleteAllFlights();
             _airportService.DeleteAllAirports();
-
+            
             return Ok();
-
-            //lock (Locker.Lock)
-            //{
-            //    using (var ctx = new FlightPlannerDbContext())
-            //    { 
-            //        ctx.Flights.RemoveRange(ctx.Flights); 
-            //        ctx.Airports.RemoveRange(ctx.Airports);
-            //        ctx.SaveChanges();
-            //    }
-
-            //    return Ok();
-            //}
         }
     }
 }

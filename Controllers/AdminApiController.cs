@@ -7,6 +7,7 @@ using FlightPlannerVS.Core.Dto;
 using FlightPlannerVS.Core.Models;
 using FlightPlannerVS.Core.Services;
 using FlightPlannerVS.Models;
+using FlightPlannerVS.Services.Validators;
 
 
 namespace FlightPlannerVS.Controllers
@@ -39,34 +40,11 @@ namespace FlightPlannerVS.Controllers
         {
             if (!_validators.All(x => x.Validate(request)))
                 return BadRequest();
-            //if (FlightStorage.IsFlightsPropNullOrEmpty(request))
-            //{
-            //    return BadRequest("Properties can't be null or empty");
-            //}
-
-            //if (FlightStorage.IsArrivalTimeLessOrEqualToDepartureTime(request))
-            //{
-            //    return BadRequest("Departure and Arrival Time error");
-            //}
-
-            //if (FlightStorage.IsFromAndToAirportsAreSame(request))
-            //{
-            //    return BadRequest("City From and To are the same");
-            //}
-
-            //if (FlightStorage.IsFlightAlreadyInList(request))
-            //{
-            //    return Conflict();
-            //}
 
             var flight = _mapper.Map(request, new Flight());
             _flightService.Create(flight);
 
-            var response = _mapper.Map(flight, new FlightResponse());
-           // FlightStorage.AddFlight(flight);
-
-            return Created("", response);
-            
+            return Created("", _mapper.Map(flight, new FlightResponse()));
         }
 
         [Route("admin-api/flights/{id}")]
