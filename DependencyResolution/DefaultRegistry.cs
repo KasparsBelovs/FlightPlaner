@@ -38,7 +38,6 @@ namespace FlightPlannerVS.DependencyResolution {
                     scan.WithDefaultConventions();
 					scan.With(new ControllerConvention());
                 });
-            //For<IExample>().Use<Example>();
             For<IDbService>().Use<DbService>();
             For(typeof(IEntityService<>)).Use(typeof(EntityService<>));
             For<IFlightService>().Use<FlightService>();

@@ -4,9 +4,11 @@ using AutoMapper;
 using FlightPlannerVS.Core.Dto;
 using FlightPlannerVS.Core.Services;
 using FlightPlannerVS.Services.Validators;
+using Microsoft.Ajax.Utilities;
 
 namespace FlightPlannerVS.Controllers
 {
+    //[EnableCors(origins: "http://local.tapuz.co.il", headers: "*", methods: "*", SupportsCredentials = true)]
     public class CustomerApiController : ApiController
     {
         private readonly IAirportService _airportService;
@@ -26,6 +28,7 @@ namespace FlightPlannerVS.Controllers
             var airports = _airportService.GetAirports(search);
             var airportResponseList = airports
                 .Select(airport => _mapper.Map(airport, new AirportResponse()))
+                .DistinctBy(a => new { a.City, a.Country, a.Airport })
                 .ToList();
 
             return airportResponseList.Count == 0 ? (IHttpActionResult) NotFound() : Ok(airportResponseList);
