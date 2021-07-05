@@ -8,7 +8,7 @@ To run this project use SQL database or check connection string to moddify for y
 
  It is api with 2 main controllers: customers and admin (admin with basic authorization).
   <br/>
- This api got endpoints to 6 endpoints: add flight, delete flight, find flight etc
+ This api got 6 endpoints: add flight, delete flight, 2x find flight by id, search flight by some key values, search airport by incomplete words
  <br/>
  There are some data validations.
 
