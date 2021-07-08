@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using AutoMapper;
 using FlightPlannerVS.Core.Dto;
 using FlightPlannerVS.Core.Services;
@@ -8,7 +9,7 @@ using Microsoft.Ajax.Utilities;
 
 namespace FlightPlannerVS.Controllers
 {
-    //[EnableCors(origins: "http://local.tapuz.co.il", headers: "*", methods: "*", SupportsCredentials = true)]
+    [EnableCors(origins: "*", headers: "*", methods: "*", SupportsCredentials = true)]
     public class CustomerApiController : ApiController
     {
         private readonly IAirportService _airportService;
@@ -42,7 +43,9 @@ namespace FlightPlannerVS.Controllers
                 return BadRequest();
       
             var flightList = _flightService.GetSearchFlightRequestPage(request);
-            var flightResponseList = flightList.Select(flight => _mapper.Map(flight, new FlightResponse())).ToList();
+            var flightResponseList = flightList
+                .Select(flight => _mapper.Map(flight, new FlightResponse()))
+                .ToList();
             var page = new PageResultResponse()
             {
                 TotalItems = flightResponseList.Count,
