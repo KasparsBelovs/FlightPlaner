@@ -4,7 +4,7 @@
 To run this project use SQL database or check connection string to moddify for your needs.
 
  <br/>  <br/>
- In project I am using: <h5>SQL database, .net framework, entity framework, automapper</h5>
+ In project I am using: <h5>SQL database, ASP.NET framework, entity framework, automapper</h5>
 
  It is api with 2 main controllers: customers and admin (admin with basic authorization).
   <br/>
